@@ -1,0 +1,156 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación de José Alejandro Rico Mesa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(45deg, #f4f4f4, #e0e0e0);
+            background-size: 400%;
+            animation: gradient 15s ease infinite;
+            font-family: 'Roboto', sans-serif;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .marble-card {
+            background-color: rgba(255, 255, 255, 0.97);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+        .marble-card:hover {
+            transform: translateY(-5px);
+        }
+        .wood-accent {
+            background: linear-gradient(to right, #8B4513, #A0522D);
+        }
+        .section-img {
+            transition: transform 0.3s ease;
+        }
+        .section-img:hover {
+            transform: scale(1.05);
+        }
+        .highlight-btn {
+            background: linear-gradient(to right, #2f855a, #38a169);
+            transition: all 0.3s ease;
+        }
+        .highlight-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        p {
+            animation: fadeIn 1.5s ease-in;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <header class="wood-accent py-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl md:text-5xl font-bold text-white animate-pulse">José Alejandro Rico Mesa</h1>
+            <p class="text-lg text-gray-200 mt-2">Programador, Deportista, Modelo y Apasionado por el Aprendizaje</p>
+        </div>
+    </header>
+
+    <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto marble-card rounded-lg p-8">
+            <div class="text-center">
+                <img src="https://images.unsplash.com/photo-1506794778202-6d4d9a6a6a7b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="José Alejandro" class="mx-auto mt-6 rounded-full h-48 w-48 object-cover shadow-lg section-img">
+            </div>
+            <div class="mt-8 space-y-8 text-gray-700 text-lg leading-relaxed">
+                <p>Mi nombre es José Alejandro Rico Mesa y me complace tener la oportunidad de presentarme ante ustedes y contarles un poco sobre quién soy, qué hago actualmente y cuáles son mis aspiraciones a futuro.</p>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="#programacion" class="highlight-btn text-white px-4 py-2 rounded-lg">Programación</a>
+                    <p>Soy estudiante de programación y actualmente desarrollo mis estudios en el Instituto INEM y el SENA. Estas instituciones me han proporcionado una sólida base en desarrollo de software, fortaleciendo mis conocimientos en lógica de programación, diseño web, bases de datos y herramientas digitales clave para el futuro tecnológico. Me apasiona crear soluciones desde cero y resolver problemas a través del código.</p>
+                </div>
+                <img src="https://images.unsplash.com/photo-1516321310762-37f0d7a01b53?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Programación" class="w-full h-64 object-cover rounded-lg section-img">
+
+                <div class="flex items-center space-x-4">
+                    <a href="#futbol" class="highlight-btn text-white px-4 py-2 rounded-lg">Fútbol</a>
+                    <p>El deporte es otra de mis grandes pasiones. Desde joven he jugado fútbol en equipos como Alexis García, Boca Bello y Zona Sur FC. Estos espacios me han enseñado disciplina, trabajo en equipo, perseverancia y respeto, fortaleciéndome tanto física como mentalmente.</p>
+                </div>
+                <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Fútbol" class="w-full h-64 object-cover rounded-lg section-img">
+
+                <div class="flex items-center space-x-4">
+                    <a href="#modelaje" class="highlight-btn text-white px-4 py-2 rounded-lg">Modelaje</a>
+                    <p>También desarrollo una carrera en el modelaje con la agencia "ModelTraining", participando en campañas y colaboraciones con fotógrafos y marcas. Esta experiencia me ha ayudado a ganar confianza y a entender la importancia de la imagen y la expresión corporal.</p>
+                </div>
+                <img src="https://images.unsplash.com/photo-1521335629791-d8e7b7ad1b2f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Modelaje" class="w-full h-64 object-cover rounded-lg section-img">
+
+                <div class="flex items-center space-x-4">
+                    <a href="#ingles" class="highlight-btn text-white px-4 py-2 rounded-lg">Inglés</a>
+                    <p>Estoy aprendiendo inglés, un idioma esencial para abrir puertas profesionales y competir a nivel internacional. Dominarlo me permitirá acceder a mejores oportunidades y comunicarme globalmente.</p>
+                </div>
+
+                <p>En cuanto a mis metas a futuro, sueño con ser un programador profesional en una empresa tecnológica reconocida, seguir explorando el modelaje a nivel internacional y convertirme en una persona vers挠
+
+System: átil, destacándome en lo intelectual, artístico y físico. Me visualizo como alguien que nunca deja de aprender y que busca marcar una diferencia positiva en cada lugar que pisa.</p>
+                <p>En resumen, soy José Alejandro Rico Mesa, un joven apasionado por la tecnología, el deporte, el arte y el aprendizaje constante. Estoy convencido de que con esfuerzo, dedicación y una buena actitud, se pueden alcanzar grandes cosas. Gracias por permitirme compartir un poco de mi historia con ustedes.</p>
+            </div>
+            <div class="wood-accent h-2 rounded-b-lg mt-8"></div>
+        </div>
+    </div>
+
+    <footer class="wood-accent py-6">
+        <div class="max-w-4xl mx-auto text-center text-white">
+            <p class="text-lg">Conéctate conmigo</p>
+            <div class="flex justify-center space-x-6 mt-4">
+                <a href="#" class="hover:text-green-300 transition"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.56v14.88A4.56 4.56 0 0 1 19.44 24H4.56A4.56 4.56 0 0 1 0 19.44V4.56A4.56 4.56 0 0 1 4.56 0h14.88A4.56 4.56 0 0 1 24 4.56zM8.9 19.44v-8.47H6.32V8.1h2.58V5.92c0-2.58 1.58-3.99 3.89-3.99.78 0 1.55.14 2.32.41v2.69h-1.58c-1.24 0-1.48.59-1.48 1.45v1.91h2.96l-.39 2.87h-2.57v8.47H8.9z"/></svg></a>
+                <a href="#" class="hover:text-green-300 transition"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.04c-5.52 0-10 4.48-10 10 0 4.42 3.58 8 8 8h2.2c.44 0 .8-.36.8-.8v-2.76c0-.44-.36-.8-.8-.8h-1.6v-2h1.6c.44 0 .8-.36.8-.8v-.8c0-.44-.36-.8-.8-.8h-1.6v-2h1.6c.44 0 .8-.36.8-.8v-.8c0-.44-.36-.8-.8-.8h-2c-2.2 0-4 1.8-4 4v2.8c0 .44-.36.8-.8.8H8v2h1.6c.44 0 .8.36.8.8v2.76c0 .44.36.8.8.8H14c4.42 0 8-3.58 8-8 0-5.52-4.48-10-10-10z"/></svg></a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
